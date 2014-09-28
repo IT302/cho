@@ -1,0 +1,2 @@
+Import('env')
+env.Program('dfadd', source = ['dfadd.c'], CPPPATH = ['.'])

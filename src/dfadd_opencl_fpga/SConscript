@@ -1,0 +1,13 @@
+Import('env2')
+#env.Program('host', source=['host.cpp','#util/Util.cpp'], 
+            #CCFLAGS=' -O2  -g3 -std=c++0x', 
+           #CPPPATH = ['/opt/intel/opencl-1.2-3.0.56860/include/','#util'],
+           #LIBS=['OpenCL'],LIBPATH='/opt/intel/opencl-1.2-3.0.56860/lib64')
+CL_INCLUDE = '/home/geoffrey/Programs/altera/13.1/hld/host/include'
+LP1 = '/home/geoffrey/Programs/altera/13.1/hld/linux64/lib'
+LP2 = '/home/geoffrey/Programs/altera/13.1/hld/host/linux64/lib'
+env2.Program('host', source=['host.cpp','#util/Util.cpp'], 
+            CCFLAGS=' -O2  -g3 -std=c++0x', 
+           CPPPATH = [CL_INCLUDE,'#util'],
+           LIBS=['alteracl', 'alterahalmmd', 'alterammdpcie', 'elf', 'rt'],
+           LIBPATH=[LP1,LP2])

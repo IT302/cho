@@ -1,0 +1,2 @@
+Import('env')
+env.Program('gsm', source = ['gsm.c'], CPPPATH = ['.'])

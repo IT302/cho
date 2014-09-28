@@ -1,0 +1,37 @@
+WARNING: You're attempting to print out a bitcode file.
+This is inadvisable as it may cause display problems. If
+you REALLY want to taste LLVM bitcode first-hand, you
+can force output with the `-f' option.
+
+===-------------------------------------------------------------------------===
+                          ... Statistics Collected ...
+===-------------------------------------------------------------------------===
+
+  22 instcount - Number of AShr insts
+ 107 instcount - Number of Add insts
+  36 instcount - Number of Alloca insts
+  21 instcount - Number of And insts
+  28 instcount - Number of BitCast insts
+ 148 instcount - Number of Br insts
+  56 instcount - Number of Call insts
+ 129 instcount - Number of GetElementPtr insts
+ 107 instcount - Number of ICmp insts
+  13 instcount - Number of LShr insts
+ 344 instcount - Number of Load insts
+  57 instcount - Number of Mul insts
+   8 instcount - Number of Or insts
+  39 instcount - Number of PHI insts
+   1 instcount - Number of Ret insts
+ 133 instcount - Number of SExt insts
+   6 instcount - Number of Select insts
+  21 instcount - Number of Shl insts
+ 168 instcount - Number of Store insts
+   9 instcount - Number of Sub insts
+  27 instcount - Number of Trunc insts
+   2 instcount - Number of Xor insts
+  11 instcount - Number of ZExt insts
+ 149 instcount - Number of basic blocks
+1493 instcount - Number of instructions (of all types)
+ 733 instcount - Number of memory instructions
+   1 instcount - Number of non-external functions
+
