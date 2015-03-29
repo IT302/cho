@@ -1,0 +1,18 @@
+   ____ _   _  ___  
+  / ___| | | |/ _ \ 
+ | |   | |_| | | | |
+ | |___|  _  | |_| |
+  \____|_| |_|\___/ 
+ 
+ 1. Overview 
+     
+ The benchmarks were tested  using Intel's and Altera's OpenCL SDKs only. Note that CHO is still at the early stage of development. 
+
+2. Directory STRUCTURE
+
+Each application in the benchmark has three folders containing the original CStones source files, the OpenCL CPU source files and the OpenCL FPGA  source files. For instance, aes is the original source files, aes_opencl is the OpenCL CPU source files and aes_opencl_fpga is the OpenCL FPGA source files.
+
+
+3. BUILDING BENCHMARKS
+
+The CPU sources can be built with the command scons in the top directory. The FPGA sources for now uses make. Note that the makefiles assume you have Altera SDK for OpenCL 
