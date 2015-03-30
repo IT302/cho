@@ -1,6 +1,6 @@
 env  =  Environment(CC = 'gcc-4.8', CXX = 'g++-4.8')
 
-cpu.Append(CCFLAGS=' -O2  -march=native -mtune=native -flax-vector-conversions  -std=c++0x')
+env.Append(CCFLAGS=' -O2  -march=native -mtune=native -flax-vector-conversions  -std=c++0x')
 env.SConscript(dirs=['adpcm', 'adpcm_opencl','motion','motion_opencl','aes','aes_opencl',
 	                   'blowfish', 'blowfish_opencl',
                      'dfadd' , 'dfadd_opencl', 'dfsin', 'dfsin_opencl', 'dfmul', 
