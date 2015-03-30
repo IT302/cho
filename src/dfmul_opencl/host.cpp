@@ -208,9 +208,9 @@ int main(int argc, char* argv[])
 
 
     auto  num  = N;
-    std::vector<cl_ulong, AAlloc::AlignedAllocator<cl_ulong, 64>> Keys_inA;
-    std::vector<cl_ulong, AAlloc::AlignedAllocator<cl_ulong, 64>> Keys_inB;
-    std::vector<cl_ulong, AAlloc::AlignedAllocator<cl_ulong, 64>> Keys_out(num);
+    std::vector<cl_ulong, AAlloc::AlignedAllocator<cl_ulong, 128>> Keys_inA;
+    std::vector<cl_ulong, AAlloc::AlignedAllocator<cl_ulong, 128>> Keys_inB;
+    std::vector<cl_ulong, AAlloc::AlignedAllocator<cl_ulong, 128>> Keys_out(num);
     //Keys_in.resize(num_in);
     Keys_inA.assign(a_input, a_input + num);
     Keys_inB.assign(b_input, b_input + num);

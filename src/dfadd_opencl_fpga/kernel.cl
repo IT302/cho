@@ -24,7 +24,7 @@ __kernel
 //__attribute__((num_compute_units(1)))
 __attribute__((task))
 #endif
-//__attribute__((reqd_work_group_size(1,1,1)))
+__attribute__((reqd_work_group_size(1,1,1)))
 void dfadd_main(__global unsigned long* restrict  input_dataA,
                 __global unsigned long* restrict  input_dataB,  
 	            __global unsigned long* restrict  output_data)

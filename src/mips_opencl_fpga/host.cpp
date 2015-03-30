@@ -117,6 +117,8 @@ int main(int argc, char* argv[])
     std::vector<cl_int, AAlloc::AlignedAllocator<cl_int, 64> > Keys_out(num);
     //Keys_in.resize(num_in);
     Keys_in.assign(A, A+num);
+    for(auto i:Keys_in)
+        printf("%d\n",i);
 
 
 
@@ -221,7 +223,7 @@ int main(int argc, char* argv[])
 
     status = clEnqueueReadBuffer (commandQueue,
         outputBuffer,
-        CL_FALSE,
+        CL_TRUE,
         0,
         (size_t)num * sizeof(cl_int),
         (void *)output,

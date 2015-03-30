@@ -224,6 +224,7 @@ __kernel
 //__attribute__((num_compute_units(1)))
 __attribute__((task))
 #endif
+__attribute__((reqd_work_group_size(1,1,1)))
 void sha_main(__global BYTE* restrict  input_data,  __global int* restrict  output_data)
 {
     //printf("hhhhhhhhh\n");

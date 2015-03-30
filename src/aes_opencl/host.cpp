@@ -187,12 +187,12 @@ int main(int argc, char* argv[])
     fill_statement(statemt,key);
     std::vector<cl_int> Input1;
     std::vector<cl_int> Input2;
-    std::vector<cl_int> Output;
+    std::vector<cl_int> Output(num_out);
     //Keys_in.resize(num_in);
     Input1.assign(statemt, statemt+32);
     Input2.assign(key, key+32);
 
-    Output.resize(num_out);
+    
 
 /*    for (int i  = 0; i < 16; ++i )
    {

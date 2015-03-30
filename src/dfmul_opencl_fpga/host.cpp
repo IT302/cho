@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
 
     status = clEnqueueWriteBuffer (commandQueue,
                                     inputBufferB,
-                                    CL_TRUE,
+                                    CL_FALSE,
                                     0,
                                     (size_t)num * sizeof(cl_ulong),
                                     (void *)inputB,
@@ -241,7 +241,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    std::cout<<"Lunching dfadd kernel!"<<std::endl;
+    std::cout<<"Lunching dfmul kernel!"<<std::endl;
 
     /*Step 10: Running the kernel.*/
     cl_event kernel_exec_event;
@@ -285,13 +285,13 @@ int main(int argc, char* argv[])
     }
 
     clWaitForEvents(events_read_buffer.size(), events_read_buffer.data());
-    std::cout<<"verifying dfadd kernel results!"<<std::endl;
+    std::cout<<"verifying dfmul kernel results!"<<std::endl;
 
     for (int i  = 0; i < N; i++)
     {
         if (Keys_out[i] != z_output[i])
         {
-            std::cout<<"dfadd failed"<<std::endl;
+            std::cout<<"dfmul failed"<<std::endl;
             std::cout << z_output[i] << " i " << i << "\n";
             break;
         }

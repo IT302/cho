@@ -1,14 +1,7 @@
-fpga = ARGUMENTS.get('fpga', 0)
-cpu = ARGUMENTS.get('cpu', 0)
+env  =  Environment(CC = 'gcc-4.8', CXX = 'g++-4.8')
 
-
-if int(cpu):
-	env  =  Environment(CC = 'gcc-4.8', CXX = 'g++-4.8')
-
-	#cpu.Append(CCFLAGS=' -O2  -g3 -march=native -mtune=native -flax-vector-conversions  -fomit-frame-pointer -std=c++0x')
-	#cpu.SConscript('SConscript', variant_dir='build/cpu', src='.',exports='cpu')
-	#env.SConscript(dirs=['adpcm', 'adpcm_opencl', 'sha','sha_opencl', 'mips','mips_opencl','gsm','gsm_opencl', 'jpeg','jpeg_opencl','motion','motion_opencl'], exports='env')
-	env.SConscript(dirs=['adpcm', 'adpcm_opencl','motion','motion_opencl','aes','aes_opencl',
+cpu.Append(CCFLAGS=' -O2  -march=native -mtune=native -flax-vector-conversions  -std=c++0x')
+env.SConscript(dirs=['adpcm', 'adpcm_opencl','motion','motion_opencl','aes','aes_opencl',
 	                   'blowfish', 'blowfish_opencl',
                      'dfadd' , 'dfadd_opencl', 'dfsin', 'dfsin_opencl', 'dfmul', 
                      'dfmul_opencl', 'gsm', 'gsm_opencl', 'sha', 'sha_opencl',
@@ -16,8 +9,5 @@ if int(cpu):
                       'sha','sha_opencl', 'hash_probe'], exports='env')
                 
 
-if int(fpga):
-   env2  =  Environment(CC = 'gcc', CXX = 'g++')
-   env2.SConscript(dirs=['dfadd_opencl_fpga'], exports='env2')
  
  	

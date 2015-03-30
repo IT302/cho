@@ -256,6 +256,7 @@ int main(int argc, char* argv[])
         std::cout << get_error_string(status)  <<std::endl;
         return 1;
     }
+    //just to make sure
     clWaitForEvents(1, &events_read_buffer[0]);
 
 
@@ -266,13 +267,11 @@ int main(int argc, char* argv[])
         if (Keys_out[i] != outData[i])
         {
             std::cout<<"sha hash failed"<<std::endl;
-            std::cout << Keys_out[i] << " i " << i << "\n";
+            std::cout << std::hex << Keys_out[i] << " i " << i << "\n";
             break;
         }
 
     }
-
-
 
 
     cl_ulong start = 0, end = 0;

@@ -167,14 +167,12 @@ int main(int argc, char* argv[])
     cl_int enc_or_dec = 0;
 
     fill_statement(statemt,key);
-    std::vector<cl_int, AAlloc::AlignedAllocator<int, 64>> Input1;
-    std::vector<cl_int, AAlloc::AlignedAllocator<int, 64>> Input2;
-    std::vector<cl_int, AAlloc::AlignedAllocator<int, 64>> Output;
+    std::vector<cl_int, AAlloc::AlignedAllocator<cl_int, 64>> Input1;
+    std::vector<cl_int, AAlloc::AlignedAllocator<cl_int, 64>> Input2;
+    std::vector<cl_int, AAlloc::AlignedAllocator<cl_int, 64>> Output(num_out);
     //Keys_in.resize(num_in);
     Input1.assign(statemt, statemt+32);
     Input2.assign(key, key+32);
-
-    Output.resize(num_out);
 
     std::vector<cl_event> events_write_buffer(4);
     std::vector<cl_event> events_read_buffer(2);
@@ -195,7 +193,7 @@ int main(int argc, char* argv[])
    cl_mem inputBuffer1 = clCreateBuffer(context,
     CL_MEM_READ_ONLY,
     (size_t)(num_in) * sizeof(cl_int),
-    (void *)input1,
+    NULL,
     &status);
    if (status != CL_SUCCESS)
    {
@@ -207,7 +205,7 @@ int main(int argc, char* argv[])
  cl_mem inputBuffer2 = clCreateBuffer(context,
     CL_MEM_READ_ONLY,
     (size_t)(num_in) * sizeof(cl_int),
-    (void *)input2,
+    NULL,
     &status);
  if (status != CL_SUCCESS)
  {
@@ -218,7 +216,7 @@ int main(int argc, char* argv[])
  cl_mem outputBuffer = clCreateBuffer(context,
     CL_MEM_WRITE_ONLY,
     (size_t)(num_out) * sizeof(cl_int),
-    (void *)output,
+    NULL,
     &status);
 
  if (status != CL_SUCCESS)
@@ -257,7 +255,7 @@ status = clEnqueueWriteBuffer (commandQueue,
     (void *)input2,
     0,
     NULL,
-    &events_write_buffer[0]);
+    &events_write_buffer[1]);
 
 if (status != CL_SUCCESS)
 {
@@ -346,7 +344,7 @@ status = clEnqueueReadBuffer (commandQueue,
     0,
     (size_t)num_out * sizeof(cl_int),
     (void *)output,
-    0,
+    1,
     &kernel_exec_event[0],
     &events_read_buffer[0]);
 
@@ -377,16 +375,6 @@ if (status != CL_SUCCESS)
             }
 
         }
-
-
-        cl_ulong start = 0, end = 0;
-        clGetEventProfilingInfo(kernel_exec_event[0], CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
-        clGetEventProfilingInfo(kernel_exec_event[0], CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
-     //END-START gives you hints on kind of “pure HW execution time”
-     //the resolution of the events is 1e-09 sec
-        auto g_NDRangePureExecTimeMs = (cl_double)(end - start)*(cl_double)(1e-06);
-
-        std::cout<<"\n\nKernel1 Execution Time: "<< g_NDRangePureExecTimeMs << " ms"<<std::endl;
 
         
 
@@ -459,8 +447,8 @@ if (status != CL_SUCCESS)
         NULL,
         global_work_size,
         local_work_size,
-        events_write_buffer.size(),
-        events_write_buffer.data(),
+        1,
+        &events_write_buffer[3],
         &kernel_exec_event[1]);
     if (status != CL_SUCCESS)
     {
@@ -503,26 +491,47 @@ if (status != CL_SUCCESS)
 
     }
 
-    start = 0, end = 0;
+    cl_ulong start = 0, end = 0;
 
-    double  pcie_time= 0;
+    double  pcie_time = 0, g_NDRangePureExecTimeMs;
 
-    for (unsigned i = 0; i < events_write_buffer.size(); ++i)
+    for (auto event: events_write_buffer)
     {
-         clGetEventProfilingInfo(events_write_buffer[i], CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
-         clGetEventProfilingInfo(events_write_buffer[i], CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
+         clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
+         clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
+         pcie_time += (cl_double)(end - start)*(cl_double)(1e-06);
+
+    }
+
+
+    for (auto event:events_read_buffer)
+    {
+         clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
+         clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
          pcie_time += (cl_double)(end - start)*(cl_double)(1e-06);
 
     }
 
     start = end = 0;
-    clGetEventProfilingInfo(kernel_exec_event[1], CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
-    clGetEventProfilingInfo(kernel_exec_event[1], CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
-     //END-START gives you hints on kind of “pure HW execution time”
-     //the resolution of the events is 1e-09 sec
-    g_NDRangePureExecTimeMs = (cl_double)(end - start)*(cl_double)(1e-06);
+    for(auto event:kernel_exec_event)
+    {
 
-    std::cout<<"\n\nKernel2 Execution Time: "<< g_NDRangePureExecTimeMs << " ms"<<std::endl;
+        clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
+        clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
+
+       //END-START gives you hints on kind of “pure HW execution time”
+       //the resolution of the events is 1e-09 sec
+        g_NDRangePureExecTimeMs += (cl_double)(end - start)*(cl_double)(1e-06);
+        //std::cout<<"\n\nKernel Execution Time: "<< g_NDRangePureExecTimeMs << " ms"<<std::endl;
+
+    }
+
+    std::cout<<"\n\nKernel Execution Time: "<< g_NDRangePureExecTimeMs << " ms\n"
+             << "PCIE Transfer Time: "<< pcie_time << " ms\n"
+             << "Total ExecutionTime: "<< g_NDRangePureExecTimeMs +  pcie_time << " ms"
+             <<std::endl;
+
+
 
 
     /*Step 12: Clean the resources.*/
