@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
     {
         cl_platform_id* platforms = (cl_platform_id*)malloc(numPlatforms* sizeof(cl_platform_id));
         status = clGetPlatformIDs(numPlatforms, platforms, NULL);
-        platform = platforms[2];
+        platform = platforms[0];
         free(platforms);
     }
 
@@ -130,18 +130,14 @@ int main(int argc, char* argv[])
     cl_uint             numDevices = 0;
     cl_device_id        *devices;
     status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 0, NULL, &numDevices);
-    std::cout << "Choose CPU as default device."<<std::endl;
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 0, NULL, &numDevices);
+
+    if(numDevices == 0)
+    {
+        std::cout << "No matching device found" << std::endl;
+    }
     devices = (cl_device_id*)malloc(numDevices * sizeof(cl_device_id));
 
-        status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, numDevices, devices, NULL);
-
-    /*status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &numDevices);
-    std::cout << "Choose CPU as default device."<<std::endl;
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &numDevices);
-    devices = (cl_device_id*)malloc(numDevices * sizeof(cl_device_id));
-
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices, NULL);*/
+    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, numDevices, devices, NULL);
 
 
 
@@ -151,45 +147,7 @@ int main(int argc, char* argv[])
     /*Step 4: Creating command queue associate with the context.*/
     cl_command_queue commandQueue = clCreateCommandQueue(context, devices[0], CL_QUEUE_PROFILING_ENABLE, NULL);
 
-    /*Step 5: Create program object */
-    // const char *filename = "kernel.cl";
-    // string sourceStr;
-    // status = convertToString(filename, sourceStr);
-    // const char *source = sourceStr.c_str();
-    // size_t sourceSize[] = {strlen(source)};
-    // cl_program program = clCreateProgramWithSource(context, 1, &source, sourceSize, NULL);
 
-    // /*Step 6: Build program. */
-    // std::string c_flags = std::string("-I ./");
-    // status=clBuildProgram(program, 1,devices,
-    //                       c_flags.c_str(),NULL,NULL);
-    // if (status != CL_SUCCESS)
-    // {
-    //     std::cout<<"Error: error building program!"<<std::endl;
-    //     std::cout << get_error_string(status)  <<std::endl;
-
-    //     auto error = status;
-
-    //     // check build error and build status first
-    //     clGetProgramBuildInfo(program, devices[0], CL_PROGRAM_BUILD_STATUS,
-    //                 sizeof(cl_build_status), &status, NULL);
-
-    //         // check build log
-    //      size_t logSize;
-    //         clGetProgramBuildInfo(program, devices[0],
-    //                 CL_PROGRAM_BUILD_LOG, 0, NULL, &logSize);
-    //         auto programLog = (char*) calloc (logSize+1, sizeof(char));
-    //         clGetProgramBuildInfo(program, devices[0],
-    //                 CL_PROGRAM_BUILD_LOG, logSize+1, programLog, NULL);
-    //         printf("Build failed; error=%d, status=%d, programLog:\n\n%s",
-    //                 error, status, programLog);
-    //         free(programLog);
-
-
-
-
-    //     return 1;
-    // }
 
     /*Step 7: Initial input,output for the host and create memory objects for the kernel*/
 
