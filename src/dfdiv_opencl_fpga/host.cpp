@@ -8,19 +8,10 @@
 #include <fstream>
 #include "Util.hpp"
 #include "test_vector.h"
-using namespace std;
-
-#include <CL/cl.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <string>
-#include <fstream>
-#include "Util.hpp"
-#include "test_vector.h"
 #include "AAlloc.h"
 #include "AOCL_Utils.h"
+using namespace std;
+
 
 
 int main(int argc, char* argv[])

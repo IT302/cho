@@ -1,5 +1,5 @@
 Import('env')
 env.Program('host', source=['host.cpp','#util/Util.cpp'], 
-            CCFLAGS=' -O2  -g3 -std=c++0x', 
+            CCFLAGS=' -O2  -std=c++0x', 
            CPPPATH = ['/opt/AMDAPP/include/','#util'],
            LIBS=['OpenCL'],LIBPATH='/opt/AMDAPP/lib/x86_64')
