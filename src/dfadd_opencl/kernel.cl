@@ -40,6 +40,7 @@ void dfadd_main(__global unsigned long* restrict  input_dataA,
 	int8a float_rounding_mode = float_round_nearest_even;
 	int8a float_exception_flags = 0;
 
+	#pragma unroll
 	for (i = 0; i < N; i++)
 	{
 	  x1 = input_dataA[i];
