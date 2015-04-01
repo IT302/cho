@@ -1,2 +1,2 @@
-Import('env')
-env.Program('dfmul', source = ['dfmul.c'], CPPPATH = ['.'])
+Import('env1')
+env1.Program('dfmul', source = ['dfmul.c'], CPPPATH = ['.'])

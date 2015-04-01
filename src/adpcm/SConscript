@@ -1,2 +1,2 @@
-Import('env')
-env.Program('adpcm', ['adpcm.c'])
+Import('env1')
+env1.Program('adpcm', ['adpcm.c'])

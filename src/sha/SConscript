@@ -1,2 +1,2 @@
-Import('env')
-env.Program('sha', source = ['sha_driver.c'],CPPPATH = ['.'])
+Import('env1')
+env1.Program('sha', source = ['sha_driver.c'],CPPPATH = ['.'])

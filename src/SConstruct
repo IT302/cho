@@ -1,11 +1,15 @@
-env  =  Environment(CC = 'gcc-4.8', CXX = 'g++-4.8')
-env.SConscript(dirs=['adpcm', 'adpcm_opencl','motion','motion_opencl','aes','aes_opencl',
-	                   'blowfish', 'blowfish_opencl',
-                     'dfadd' , 'dfadd_opencl', 'dfsin', 'dfsin_opencl', 'dfmul', 
-                     'dfmul_opencl', 'gsm', 'gsm_opencl', 'sha', 'sha_opencl',
-                     'dfdiv', 'dfdiv_opencl','jpeg', 'jpeg_opencl',
-                      'sha','sha_opencl', 'hash_probe'], exports='env')
-                
+env1   =  Environment(CC = 'gcc-4.8', CXX = 'g++-4.8') 
+env2   =   env1.Clone()
+env1.SConscript(dirs=['adpcm','motion','aes','blowfish', 'dfadd' ,  'dfsin',
+'dfmul', 'gsm',  'sha', 'dfdiv', 'jpeg', 'mips'], exports='env1')
 
- 
- 	
+objs = env2.Object('util/Util.cpp', CCFLAGS=' -O2  -std=c++0x')
+Export('objs')
+env2.SConscript(dirs=[
+'adpcm_opencl','motion_opencl','aes_opencl','blowfish_opencl','dfadd_opencl',
+'dfsin_opencl', 'dfmul_opencl',  'gsm_opencl', 'mips_opencl',
+'sha_opencl','dfdiv_opencl','jpeg_opencl'], exports='env2')
+
+
+
+

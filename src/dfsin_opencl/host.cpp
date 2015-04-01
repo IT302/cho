@@ -6,38 +6,72 @@
 #include <string>
 #include <fstream>
 #include "Util.hpp"
+#include "AAlloc.h"
 #include "test_vector.h"
 using namespace std;
 
-/* convert the kernel file into a string */
-int convertToString(const char *filename, std::string& s)
+
+///
+//  Attempt to create the program object from a cached binary.  Note that
+//  on first run this will fail because the binary has not yet been created.
+//
+cl_program CreateProgramFromBinary(cl_context context, cl_device_id device, const char* fileName)
 {
-    size_t size;
-    char*  str;
-    std::fstream f(filename, (std::fstream::in | std::fstream::binary));
-
-    if(f.is_open())
+    FILE *fp = fopen(fileName, "rb");
+    if (fp == NULL)
     {
-        size_t fileSize;
-        f.seekg(0, std::fstream::end);
-        size = fileSize = (size_t)f.tellg();
-        f.seekg(0, std::fstream::beg);
-        str = new char[size+1];
-        if(!str)
-        {
-            f.close();
-            return 0;
-        }
-
-        f.read(str, fileSize);
-        f.close();
-        str[size] = '\0';
-        s = str;
-        delete[] str;
-        return 0;
+        return NULL;
     }
-    std::cout<<"Error: failed to open file\n:"<<filename<<std::endl;
-    return -1;
+
+    // Determine the size of the binary
+    size_t binarySize;
+    fseek(fp, 0, SEEK_END);
+    binarySize = ftell(fp);
+    rewind(fp);
+
+    unsigned char *programBinary = new unsigned char[binarySize];
+    fread(programBinary, 1, binarySize, fp);
+    fclose(fp);
+
+    cl_int errNum = 0;
+    cl_program program;
+    cl_int binaryStatus;
+
+    program = clCreateProgramWithBinary(context,
+                                        1,
+                                        &device,
+                                        &binarySize,
+                                        (const unsigned char**)&programBinary,
+                                        &binaryStatus,
+                                        &errNum);
+    delete [] programBinary;
+    if (errNum != CL_SUCCESS)
+    {
+        std::cerr << "Error loading program binary." << std::endl;
+        return NULL;
+    }
+
+    if (binaryStatus != CL_SUCCESS)
+    {
+        std::cerr << "Invalid binary for device" << std::endl;
+        return NULL;
+    }
+
+    errNum = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+    if (errNum != CL_SUCCESS)
+    {
+        // Determine the reason for the error
+        char buildLog[16384];
+        clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG,
+                              sizeof(buildLog), buildLog, NULL);
+
+        std::cerr << "Error in program: " << std::endl;
+        std::cerr << buildLog << std::endl;
+        clReleaseProgram(program);
+        return NULL;
+    }
+
+    return program;
 }
 
 int main(int argc, char* argv[])
@@ -58,7 +92,7 @@ int main(int argc, char* argv[])
     {
         cl_platform_id* platforms = (cl_platform_id*)malloc(numPlatforms* sizeof(cl_platform_id));
         status = clGetPlatformIDs(numPlatforms, platforms, NULL);
-        platform = platforms[1];
+        platform = platforms[0];
         free(platforms);
     }
 
@@ -66,19 +100,13 @@ int main(int argc, char* argv[])
      *Otherwise use the second CPU  device which should be intel.*/
     cl_uint             numDevices = 0;
     cl_device_id        *devices;
-    /*status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 0, NULL, &numDevices);
+    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 0, NULL, &numDevices);
     std::cout << "Choose CPU as default device."<<std::endl;
     status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 0, NULL, &numDevices);
     devices = (cl_device_id*)malloc(numDevices * sizeof(cl_device_id));
 
-        status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, numDevices, devices, NULL);*/
+    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, numDevices, devices, NULL);
 
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &numDevices);
-    std::cout << "Choose CPU as default device."<<std::endl;
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &numDevices);
-    devices = (cl_device_id*)malloc(numDevices * sizeof(cl_device_id));
-
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices, NULL);
 
 
 
@@ -88,45 +116,17 @@ int main(int argc, char* argv[])
     /*Step 4: Creating command queue associate with the context.*/
     cl_command_queue commandQueue = clCreateCommandQueue(context, devices[0], CL_QUEUE_PROFILING_ENABLE, NULL);
 
-    /*Step 5: Create program object */
-    const char *filename = "kernel.cl";
-    string sourceStr;
-    status = convertToString(filename, sourceStr);
-    const char *source = sourceStr.c_str();
-    size_t sourceSize[] = {strlen(source)};
-    cl_program program = clCreateProgramWithSource(context, 1, &source, sourceSize, NULL);
 
-    /*Step 6: Build program. */
-    std::string c_flags = std::string("-I ./  ");
-    status=clBuildProgram(program, 1,devices,
-                          c_flags.c_str(),NULL,NULL);
-    if (status != CL_SUCCESS)
+    
+    cl_program program = CreateProgramFromBinary(context, devices[0], "kernel.ir");
+    if (program == NULL)
     {
-        std::cout<<"Error: error building program!"<<std::endl;
-        std::cout << get_error_string(status)  <<std::endl;
-
-        auto error = status;
-
-        // check build error and build status first
-        clGetProgramBuildInfo(program, devices[0], CL_PROGRAM_BUILD_STATUS,
-                    sizeof(cl_build_status), &status, NULL);
-
-            // check build log
-         size_t logSize;
-            clGetProgramBuildInfo(program, devices[0],
-                    CL_PROGRAM_BUILD_LOG, 0, NULL, &logSize);
-            auto programLog = (char*) calloc (logSize+1, sizeof(char));
-            clGetProgramBuildInfo(program, devices[0],
-                    CL_PROGRAM_BUILD_LOG, logSize+1, programLog, NULL);
-            printf("Build failed; error=%d, status=%d, programLog:\n\n%s",
-                    error, status, programLog);
-            free(programLog);
-
-
-
-
-        return 1;
+        std::cout << "Binary not loaded, create from source..." << std::endl;
+        exit(1);
+  
     }
+
+   
 
     /*Step 7: Initial input,output for the host and create memory objects for the kernel*/
 

@@ -1,2 +1,2 @@
-Import('env')
-env.Program('blowfish', ['bf.c'])
+Import('env1')
+env1.Program('blowfish', ['bf.c'])

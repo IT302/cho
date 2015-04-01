@@ -1,5 +1,5 @@
-Import('env')
-env.Program('host', source=['host.cpp','#util/Util.cpp'], 
+Import('env2')
+env1.Program('host', source=['host.cpp',env2.Object('#util/Util.cpp')], 
             CCFLAGS=' -O2  -g3 -std=c++0x', 
-           CPPPATH = ['/opt/intel/opencl-1.2-3.0.56860/include/','#util'],
+           CPPPATH = ['/opt/intel/opencl/include/','#util'],
            LIBS=['OpenCL'],LIBPATH='/opt/intel/opencl-1.2-3.0.56860/lib64')

@@ -1,2 +1,2 @@
-Import('env')
-env.Program('dfdiv', source = ['dfdiv.c'],CPPPATH = ['.'])
+Import('env1')
+env1.Program('dfdiv', source = ['dfdiv.c'],CPPPATH = ['.'])

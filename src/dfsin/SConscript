@@ -1,2 +1,2 @@
-Import('env')
-env.Program('dfsin', source = ['dfsin.c'], CPPPATH = ['.'])
+Import('env1')
+env1.Program('dfsin', source = ['dfsin.c'], CPPPATH = ['.'])

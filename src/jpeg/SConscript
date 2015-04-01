@@ -1,2 +1,2 @@
-Import('env')
-env.Program('jpeg', source = ['main.c'],CPPPATH = ['.'])
+Import('env1')
+env1.Program('jpeg', source = ['main.c'],CPPPATH = ['.'])

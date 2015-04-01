@@ -1,9 +1,9 @@
 Import('env')
-#env.Program('host', source=['host.cpp','#util/Util.cpp'], 
+#env.Program('host', source=['host.cpp',env2.Object('#util/Util.cpp')], 
             #CCFLAGS=' -O2  -g3 -std=c++0x', 
            #CPPPATH = ['/opt/intel/opencl-1.2-3.0.56860/include/','#util'],
            #LIBS=['OpenCL'],LIBPATH='/opt/intel/opencl-1.2-3.0.56860/lib64')
-env.Program('host', source=['host.cpp','#util/Util.cpp'], 
+env.Program('host', source=['host.cpp',env2.Object('#util/Util.cpp')], 
             CCFLAGS=' -O2  -g3 -std=c++0x', 
            CPPPATH = ['/opt/AMDAPP/include/','#util'],
            LIBS=['OpenCL'],LIBPATH='/opt/AMDAPP/lib/x86_64')

@@ -246,6 +246,12 @@ int main(int argc, char* argv[])
 
     }*/
     clWaitForEvents(1, &events_read_buffer[0]);
+    if (status != CL_SUCCESS)
+    {
+        std::cout<<"Error: clWaitForEvents!"<<std::endl;
+        std::cout << get_error_string(status)  <<std::endl;
+        return 1;
+    }
 
     std::cout<<"verifying mips kernel results!"<<std::endl;
 

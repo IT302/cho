@@ -1,2 +1,2 @@
-Import('env')
-env.Program('mpeg2', source = ['mpeg2.c'], CPPPATH = ['.'])
+Import('env1')
+env1.Program('mpeg2', source = ['mpeg2.c'], CPPPATH = ['.'])

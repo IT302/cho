@@ -1,5 +1,5 @@
-Import('env')
-env.Program('host', source=['host.cpp','#util/Util.cpp'], 
+Import('env2', 'objs')
+env2.Program('host', source=['host.cpp', objs], 
             CCFLAGS=' -O2  -std=c++0x', 
-           CPPPATH = ['/opt/AMDAPP/include/','#util'],
-           LIBS=['OpenCL'],LIBPATH='/opt/AMDAPP/lib/x86_64')
+           CPPPATH = ['/opt/intel/opencl/include/','#util'],
+           LIBS=['OpenCL'],LIBPATH='/opt/intel/opencl/lib64')

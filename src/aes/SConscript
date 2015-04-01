@@ -1,2 +1,2 @@
-Import('env')
-env.Program('aes', source = ['aes.c'], CPPPATH = ['.'])
+Import('env1')
+env1.Program('aes', source = ['aes.c'], CPPPATH = ['.'])

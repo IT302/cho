@@ -1,2 +1,2 @@
-Import('env')
-env.Program('dfadd', source = ['dfadd.c'], CPPPATH = ['.'])
+Import('env1')
+env1.Program('dfadd', source = ['dfadd.c'], CPPPATH = ['.'])

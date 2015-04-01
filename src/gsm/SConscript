@@ -1,2 +1,2 @@
-Import('env')
-env.Program('gsm', source = ['gsm.c'], CPPPATH = ['.'])
+Import('env1')
+env1.Program('gsm', source = ['gsm.c'], CPPPATH = ['.'])

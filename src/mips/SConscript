@@ -1,2 +1,2 @@
-Import('env')
-env.Program('mips', ['mips.c'])
+Import('env1')
+env1.Program('mips', ['mips.c'])
