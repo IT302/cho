@@ -14,10 +14,7 @@
 
 
 __kernel
-#ifdef FPGA
-//__attribute__((num_compute_units(1)))
-__attribute__((task))
-#endif
+__attribute__((num_compute_units(1)))
 __attribute__((reqd_work_group_size(1,1,1)))
 void blowfish_main(__global const unsigned char* restrict  input_data,  __global unsigned char* restrict  output_data)
 {
@@ -40,6 +37,7 @@ void blowfish_main(__global const unsigned char* restrict  input_data,  __global
 
   BF_set_key (8, ukey, key_P, key_S);
   i  = 0;
+  #pragma unroll 2
   while ( k < KEYSIZE )
   {
 

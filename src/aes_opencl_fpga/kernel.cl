@@ -20,10 +20,8 @@ typedef struct GlobalVars globvars;
 
 
 __kernel
-#ifdef FPGA
-//__attribute__((num_compute_units(1)))
-__attribute__((task))
-#endif
+
+__attribute__((num_compute_units(1)))
 __attribute__((reqd_work_group_size(1,1,1)))
 void aes_main( __global int* restrict  input_data1, 
               __global  int* restrict  input_data2,
@@ -41,7 +39,7 @@ void aes_main( __global int* restrict  input_data1,
  
 
 
-  #pragma unroll
+  //#pragma unroll 2
   for (int i  = 0; i < 16; ++i )
   {
     statemt[i] = input_data1[i];
@@ -64,7 +62,7 @@ void aes_main( __global int* restrict  input_data1,
   
 
 
-  #pragma unroll
+  //#pragma unroll 2
   for (int i  = 0; i < 16; ++i )
   {
     output_data[i] = statemt[i];
