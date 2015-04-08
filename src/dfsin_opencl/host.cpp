@@ -30,7 +30,7 @@ cl_program CreateProgramFromBinary(cl_context context, cl_device_id device, cons
     rewind(fp);
 
     unsigned char *programBinary = new unsigned char[binarySize];
-    fread(programBinary, 1, binarySize, fp);
+    auto size = fread(programBinary, 1, binarySize, fp);
     fclose(fp);
 
     cl_int errNum = 0;
@@ -130,10 +130,9 @@ int main(int argc, char* argv[])
 
     /*Step 7: Initial input,output for the host and create memory objects for the kernel*/
 
-
-    auto  num  = N;
-    std::vector<cl_ulong> Keys_in;
-    std::vector<cl_ulong> Keys_out;
+   auto  num  = N;
+    std::vector<cl_ulong, AAlloc::AlignedAllocator<cl_ulong, 128>> Keys_in;
+    std::vector<cl_ulong, AAlloc::AlignedAllocator<cl_ulong, 128>> Keys_out;
     //Keys_in.resize(num_in);
     Keys_in.assign(test_in, test_in+num);
 
@@ -141,13 +140,13 @@ int main(int argc, char* argv[])
 
 
 
-    cl_ulong* input =  Keys_in.data();
-    cl_ulong* output = Keys_out.data();
+    std::vector<cl_event> events_write_buffer(1);
+    std::vector<cl_event> events_read_buffer(1);
 
     cl_mem inputBuffer = clCreateBuffer(context,
-                                        CL_MEM_READ_ONLY|CL_MEM_ALLOC_HOST_PTR|CL_MEM_COPY_HOST_PTR,
+                                        CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
                                         (size_t)(num) * sizeof(cl_ulong),
-                                        (void *)input,
+                                        Keys_in.data(),
                                         &status);
    if (status != CL_SUCCESS)
    {
@@ -158,9 +157,9 @@ int main(int argc, char* argv[])
 
 
     cl_mem outputBuffer = clCreateBuffer(context,
-    CL_MEM_WRITE_ONLY|CL_MEM_ALLOC_HOST_PTR|CL_MEM_COPY_HOST_PTR,
+    CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
     (size_t)(num) * sizeof(cl_ulong),
-    (void *)output,
+    Keys_out.data(),
     &status);
 
    if (status != CL_SUCCESS)
@@ -175,13 +174,13 @@ int main(int argc, char* argv[])
 
     status = clEnqueueWriteBuffer (commandQueue,
                                     inputBuffer,
-                                    CL_TRUE,
+                                    CL_FALSE,
                                     0,
                                     (size_t)num * sizeof(cl_ulong),
-                                    (void *)input,
+                                    Keys_in.data(),
                                     0,
                                     NULL,
-                                    NULL);
+                                    &events_write_buffer[0]);
 
     if (status != CL_SUCCESS)
     {
@@ -229,8 +228,8 @@ int main(int argc, char* argv[])
                                     NULL,
                                     global_work_size,
                                     local_work_size,
-                                    0,
-                                    NULL,
+                                    events_write_buffer.size(),
+                                    events_write_buffer.data(),
                                     &kernel_exec_event);
     if (status != CL_SUCCESS)
     {
@@ -242,16 +241,6 @@ int main(int argc, char* argv[])
     /*Step 11: Read the std::cout put back to host memory.*/
 
 
-    //status = clFinish(commandQueue);
-    status = clWaitForEvents(1, &kernel_exec_event);
-    if (status != CL_SUCCESS)
-    {
-        std::cout<<"Error: couldn't finish!"<<std::endl;
-        std::cout << get_error_string(status)  <<std::endl;
-        return 1;
-    }
-
-    status = clFinish(commandQueue);
 
 
     status = clEnqueueReadBuffer (commandQueue,
@@ -259,10 +248,10 @@ int main(int argc, char* argv[])
         CL_TRUE,
         0,
         (size_t)num * sizeof(cl_ulong),
-        (void *)output,
-        0,
-        NULL,
-        NULL);
+        Keys_out.data(),
+        1,
+        &kernel_exec_event,
+        &events_read_buffer[0]);
 
     if (status != CL_SUCCESS)
     {
@@ -281,6 +270,8 @@ int main(int argc, char* argv[])
 
     std::cout<<"verifying dfsin kernel results!"<<std::endl;
 
+    cl_ulong* output = Keys_out.data();
+
     for (int i  = 0; i < 8; i++)
     {
         if (output[i] != test_out[i])
@@ -294,13 +285,39 @@ int main(int argc, char* argv[])
 
 
     cl_ulong start = 0, end = 0;
+
+    double  pcie_time= 0;
+
+    for (unsigned i = 0; i < events_write_buffer.size(); ++i)
+    {
+         clGetEventProfilingInfo(events_write_buffer[i], CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
+         clGetEventProfilingInfo(events_write_buffer[i], CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
+         pcie_time += (cl_double)(end - start)*(cl_double)(1e-06);
+
+    }
+
+
+    for (unsigned i = 0; i < events_read_buffer.size(); ++i)
+    {
+         clGetEventProfilingInfo(events_read_buffer[i], CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
+         clGetEventProfilingInfo(events_read_buffer[i], CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
+         pcie_time += (cl_double)(end - start)*(cl_double)(1e-06);
+
+    }
+
+
+
     clGetEventProfilingInfo(kernel_exec_event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, NULL);
     clGetEventProfilingInfo(kernel_exec_event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
      //END-START gives you hints on kind of “pure HW execution time”
      //the resolution of the events is 1e-09 sec
     auto g_NDRangePureExecTimeMs = (cl_double)(end - start)*(cl_double)(1e-06);
 
-    std::cout<<"\n\nKernel1 Execution Time: "<< g_NDRangePureExecTimeMs << " ms"<<std::endl;
+    std::cout<<"\n\nKernel Execution Time: "<< g_NDRangePureExecTimeMs << " ms\n"
+             << "PCIE Transfer Time: "<< pcie_time << " ms\n"
+             << "Total ExecutionTime: "<< g_NDRangePureExecTimeMs +  pcie_time << " ms"
+             <<std::endl;
+
 
 
 

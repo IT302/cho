@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
     {
         cl_platform_id* platforms = (cl_platform_id*)malloc(numPlatforms* sizeof(cl_platform_id));
         status = clGetPlatformIDs(numPlatforms, platforms, NULL);
-        platform = platforms[1];
+        platform = platforms[0];
         free(platforms);
     }
 

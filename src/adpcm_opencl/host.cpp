@@ -58,9 +58,9 @@ int main(int argc, char* argv[])
     {
         cl_platform_id* platforms = (cl_platform_id*)malloc(numPlatforms* sizeof(cl_platform_id));
         status = clGetPlatformIDs(numPlatforms, platforms, NULL);
-        platform = platforms[1];
+        platform = platforms[0];
         char ret[1024];
-        clGetPlatformInfo(platforms[1],CL_PLATFORM_NAME,1024, ret,NULL);
+        clGetPlatformInfo(platforms[0],CL_PLATFORM_NAME,1024, ret,NULL);
         std::cout << "CL_PLATFORM_NAME  " << ret << std::endl;
         free(platforms);
     }
@@ -69,21 +69,12 @@ int main(int argc, char* argv[])
      *Otherwise use the second CPU  device which should be intel.*/
     cl_uint             numDevices = 0;
     cl_device_id        *devices;
-    /*status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 0, NULL, &numDevices);
+    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 0, NULL, &numDevices);
     std::cout << "Choose CPU as default device."<<std::endl;
     status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 0, NULL, &numDevices);
     devices = (cl_device_id*)malloc(numDevices * sizeof(cl_device_id));
 
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, numDevices, devices, NULL);*/
-
-
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &numDevices);
-    std::cout << "Choose CPU as default device."<<std::endl;
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &numDevices);
-    devices = (cl_device_id*)malloc(numDevices * sizeof(cl_device_id));
-
-    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices, NULL);
-
+    status = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, numDevices, devices, NULL);
 
 
     /*Step 3: Create context.*/
