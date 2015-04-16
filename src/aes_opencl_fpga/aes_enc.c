@@ -108,6 +108,7 @@ encrypt (int statemt[32], int key[32], int word[4][120], int type, int nb, int r
       break;
     }
   //AddRoundKey (statemt, type, 0);
+  #pragma unroll
   AddRoundKey(statemt, word, type, 0);
   for (i = 1; i <= round + 9; ++i)
     {

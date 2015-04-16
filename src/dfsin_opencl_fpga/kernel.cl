@@ -24,6 +24,7 @@ local_sin (float64a rad, int8a* float_rounding_mode, int8a* float_exception_flag
   inc = 1;
   m_rad2 = float64_neg (float64_mul (rad, rad,  float_rounding_mode, float_exception_flags));
   //printf("m_rad2  =  %016llx\n", m_rad2);
+  #pragma unroll
   do
     {
       diff = float64_div (float64_mul (diff, m_rad2, float_rounding_mode, float_exception_flags),
@@ -41,7 +42,7 @@ local_sin (float64a rad, int8a* float_rounding_mode, int8a* float_exception_flag
 
 
 __kernel
-__attribute__((num_compute_units(2)))
+__attribute__((num_compute_units(1)))
 __attribute__((reqd_work_group_size(1,1,1)))
 void dfsin_main(__global const unsigned long* restrict  input_data,  __global unsigned long* restrict  output_data)
 {
@@ -49,7 +50,7 @@ void dfsin_main(__global const unsigned long* restrict  input_data,  __global un
     float64a result, in;
     int8a float_rounding_mode = float_round_nearest_even;
     int8a float_exception_flags = 0;
-    //#pragma unroll 4
+    #pragma unroll 3
     for (i = 0; i < N; i++)
     {
 

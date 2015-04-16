@@ -114,6 +114,7 @@ decrypt (int statemt[32], int key[32], int word[4][120], int type, int nb, int r
 
   InversShiftRow_ByteSub (statemt, nb);
 
+  #pragma unroll
   for (i = round - 1; i >= 1; --i)
     {
       //AddRoundKey_InversMixColumn (statemt, nb, i);

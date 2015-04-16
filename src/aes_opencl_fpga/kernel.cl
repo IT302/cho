@@ -39,7 +39,7 @@ void aes_main( __global int* restrict  input_data1,
  
 
 
-  //#pragma unroll 2
+  #pragma unroll 
   for (int i  = 0; i < 16; ++i )
   {
     statemt[i] = input_data1[i];
@@ -62,7 +62,7 @@ void aes_main( __global int* restrict  input_data1,
   
 
 
-  //#pragma unroll 2
+  #pragma unroll 
   for (int i  = 0; i < 16; ++i )
   {
     output_data[i] = statemt[i];

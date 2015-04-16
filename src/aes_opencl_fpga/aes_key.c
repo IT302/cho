@@ -129,12 +129,14 @@ KeySchedule (int type, int key[32], int word[4][120])
     default:
       return -1;
     }
+  #pragma unroll
   for (j = 0; j < nk; ++j)
     for (i = 0; i < 4; ++i)
 /* 0 word */
       word[i][j] = key[i + j * 4];
 
 /* expanded key is generated */
+  #pragma unroll
   for (j = nk; j < nb * (round + 1); ++j)
     {
 
@@ -154,6 +156,7 @@ KeySchedule (int type, int key[32], int word[4][120])
 	  temp[3] = word[3][j - 1];
 	}
       if (nk > 6 && j % nk == 4)
+  #pragma unroll
 	for (i = 0; i < 4; ++i)
 	  temp[i] = SubByte (temp[i]);
       for (i = 0; i < 4; ++i)

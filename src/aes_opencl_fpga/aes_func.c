@@ -368,7 +368,7 @@ MixColumn_AddRoundKey (int statemt[32], int nb, int word[4][120], int n)
 {
   int ret[8 * 4], j;
   int x;
-
+  #pragma unroll
   for (j = 0; j < nb; ++j)
     {
       ret[j * 4] = (statemt[j * 4] << 1);
@@ -419,6 +419,7 @@ MixColumn_AddRoundKey (int statemt[32], int nb, int word[4][120], int n)
       ret[3 + j * 4] ^=
 	statemt[1 + j * 4] ^ statemt[2 + j * 4] ^ word[3][j + nb * n];
     }
+  #pragma unroll
   for (j = 0; j < nb; ++j)
     {
       statemt[j * 4] = ret[j * 4];
@@ -435,7 +436,7 @@ AddRoundKey_InversMixColumn (int statemt[32], int word[4][120], int nb, int n)
 {
   int ret[8 * 4], i, j;
   int x;
-
+  #pragma unroll
   for (j = 0; j < nb; ++j)
     {
       statemt[j * 4] ^= word[0][j + nb * n];
@@ -497,6 +498,7 @@ AddRoundKey_InversMixColumn (int statemt[32], int word[4][120], int nb, int n)
 	x ^= statemt[(i + 3) % 4 + j * 4];
 	ret[i + j * 4] ^= x;
       }
+  #pragma unroll
   for (i = 0; i < nb; ++i)
     {
       statemt[i * 4] = ret[i * 4];
@@ -531,6 +533,7 @@ AddRoundKey (int statemt[32], int word[4][120], int type, int n)
       nb = 8;
       break;
     }
+  #pragma unroll
   for (j = 0; j < nb; ++j)
     {
       statemt[j * 4] ^= word[0][j + nb * n];
