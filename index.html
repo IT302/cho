@@ -1,54 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
     <title>CHO by IT302</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">CHO</h1>
+        <p class="header">CHO is a benchmark suite for OpenCL FPGA Accelerators </p>
 
-    <header>
-      <div class="container">
-        <h1>CHO</h1>
-        <h2>CHO is a benchmark suite for OpenCL FPGA Accelerators </h2>
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/IT302/cho/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/IT302/cho/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/IT302/cho">View On GitHub</a></li>
+        </ul>
 
-        <section id="downloads">
-          <a href="https://github.com/IT302/cho/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/IT302/cho/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/IT302/cho" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/IT302">IT302</a></p>
 
-    <div class="container">
-      <section id="main_content">
+
+      </header>
+      <section>
         <h1>
-<a name="cho" class="anchor" href="#cho"><span class="octicon octicon-link"></span></a>CHO</h1>
+<a id="cho" class="anchor" href="#cho" aria-hidden="true"><span class="octicon octicon-link"></span></a>CHO</h1>
 
 <p>Programming FPGAs with OpenCL is now becoming mainstream. However, unlike software, there are no benchmarks for evaluating these compilers. CHO is an attempt at providing  some sort of "standard" benchmark suite.</p>
 
 <p>CHO is  a suite of benchmark applications for OpenCL FPGA platforms. We started off by porting <a href="http://www.ertl.jp/chstone/">CHStone</a> to OpenCL. We will be adding more applications with time. This paper (CHO: A Benchmark Suite for OpenCL-based FPGA Accelerators) is a good introduction/refresher on FPGA, OpenCL or High-level Synthesis.</p>
 
 <h1>
-<a name="papers" class="anchor" href="#papers"><span class="octicon octicon-link"></span></a>Papers</h1>
+<a id="papers" class="anchor" href="#papers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Papers</h1>
 
 <ul>
 <li>
+<a href="https://www.escholar.manchester.ac.uk/uk-ac-man-scw:263819">CHO: Towards a Benchmark Suite for OpenCL FPGA Accelerators</a> <br>
+Geoffrey Ndu, Javier Navaridas, Mikel Lujan. <br>
+3rd International Workshop on OpenCL, 13 - 15 May 2015.<br>
+</li>
+<li>
 <a href="https://www.escholar.manchester.ac.uk/uk-ac-man-scw:228247">CHO: A Benchmark Suite for OpenCL-based FPGA Accelerators</a>. <br>
 Geoffrey Ndu, Mikel Lujan, Javier Navaridas. <br>
-University Manchester Technical Report UNIMAN-COMP-APT-TR-02-05-2014.
+University Manchester Technical Report UNIMAN-COMP-APT-TR-02-05-2014,
 May 2, 2014.</li>
 </ul>
-      </section>
-    </div>
 
-              <script type="text/javascript">
+
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
