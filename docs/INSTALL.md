@@ -20,11 +20,11 @@ Each application in the benchmark suite has three directories. For example, gsm 
 
 ##Building and Running
 
-The build system is based on  Scons. cho/SConstruct is  main script SCons script.  To build the OpenCL and C applications run 
+The build system is based on  Scons. src/SConstruct is  main  SCons script.  To build the OpenCL and C applications run 
 ```shell
 $ scons
 ```
-from the top directory. For now the FPGA application has to built manually from each individual directory using Makefile. The present setup targets Altera SDK for OpenCL. Please, read Altera SDK for OpenCL: Getting Started Guide to see how to setup  the SDK.
+from src directory. For now the FPGA application has to built manually from each individual directory using make. The present setup targets Altera SDK for OpenCL. Please, read Altera SDK for OpenCL: Getting Started Guide to see how to set up  the SDK.
 
 
 ## Issues, Questions and Contributing Code
