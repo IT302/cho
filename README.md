@@ -6,7 +6,7 @@ CHO is  a suite of benchmark applications for OpenCL FPGA platforms. We started 
 
 Papers
 ======
-- [CHO: Towards a Benchmark Suite for OpenCL FPGA Accelerators][iwocl2015] <br>
+- [CHO: Towards a Benchmark Suite for OpenCL FPGA Accelerators][iwocl2015]. <br>
   Geoffrey Ndu, Javier Navaridas, Mikel Lujan. <br>
   3rd International Workshop on OpenCL, 12 - 13 May 2015.  
 - [CHO: A Benchmark Suite for OpenCL-based FPGA Accelerators][techreport1]. <br>
